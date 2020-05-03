@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="row" style="padding:10px;">
+        <div class="col-lg-6 text-justify">
+            <strong class="text-primary h4 mb-2">About GoodBooks</strong>
+            <br><br>
+            Are you a reading enthusiast? 📚<br>
+            Well, good for you. You have come to a quintessential place. 🎉<br>
+            Here at <span class="mark">GoodBooks</span>,
+            create a list of books you'll be reading.<br> Explore new books. <br>
+            Rate and review books.<br>
+            Get to know more about books from different genre. <br>Read the summary and the famous quotes from the
+            book.<br>
+            GoodBooks makes your reading management experience hassle-free. 💕
+
+        </div>
+        <!-- welcome block -->
+        <div class="col-lg-6 text-center">
+            <strong class="h4 text-primary text-center">Welcome to GoodBooks 🤘</strong>
+            <br><br>
+            <p class="my-1">Already an user? </p>
+            {% if user.is_authenticated %}
+            <button class="btn btn-secondary text-white" data-toggle="tooltip" data-placement="right"
+                title="Disabled. Logout first to log in">Log in</button>
+            {%else%}
+            <a class="text-white" href="/login/" style="text-decoration:none;"><button
+                    class="btn btn-primary text-white">Log in</button></a>
+            {%endif%}
+            <br><br>
+            <p class="my-1">New here? </p>
+            {% if user.is_authenticated %}
+            <button class="btn btn-secondary text-white" data-toggle="tooltip" data-placement="right"
+                title="Disabled. Logout first to Sign up">Sign up</button>
+            {%else%}
+            <a class="text-white" href="/signup/" style="text-decoration:none;"><button
+                    class="btn btn-primary text-white">Sign up</button></a>
+            {%endif%}
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- carousel -->
+    <center>
+        <p class="h4 text-primary m-3" style="">Featured Books</p>
+    </center>
+    <div id="carouselExampleIndicators" class="carousel slide p-3 mb-2 text-dark mt-2" style=""
+        data-ride="carousel">
+        <ol class="carousel-indicators">
+            {% for i in rating_sorted_keys %}
+            {% if forloop.first %}
+            <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter0 }}" class="active"></li>
+            {% else %}
+            <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter0 }}"></li>
+            {% endif %}
+            {% endfor %}
+        </ol>
+        <div class="carousel-inner">
+            {% for rating in rating_sorted_keys %}
+            {% if forloop.first %}
+            <div class="carousel-item active">
+                <a href="/details/{{rating}}" style="text-decoration:none;color:black;">
+                    <center>
+                        <img src="{% if books|get_cover:rating == '' %}{% static 'img/none.jpg' %}{% else %}{{ books|get_cover:rating }}{% endif %}"
+                            class="img-thumbnail mb-4" height="700px" width="300px">
+
+                        <div class="d-none d-md-block" style="position:relative;">
+                            <h5>{{ books|get_title:rating }}</h5>
+                            <p>{{ books|get_quote:rating }}</p>
+                            <br>
+                        </div>
+                    </center>
+                </a>
+            </div>
+            {% else %}
+            <div class="carousel-item">
+                <a href="/details/{{rating}}" style="text-decoration:none;color:black;">
+                    <center>
+                        <img src="{% if books|get_cover:rating == '' %}{% static 'img/none.jpg' %}{% else %}{{ books|get_cover:rating }}{% endif %}"
+                            class="img-thumbnail mb-4" height="700px" width="300px">
+
+                        <div class=" d-none d-md-block" style="position:relative;">
+                            <h5>{{ books|get_title:rating }}</h5>
+                            <p>{{ books|get_quote:rating }}</p>
+                            <br>
+                        </div>
+                    </center>
+                </a>
+            </div>
+
+            {% endif %}
+            {% endfor %}
+        </div>
+        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+</div>
+{% endblock content %}

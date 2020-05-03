@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!-- https://github.com/agiliq/django-graphos -->
+<div class="container">
+    <div class="col-md-12">
+        <center>
+            <div style="width: 20vw;">
+                <img src="{{ profile.profile_picture.url }}" class="img-fluid img-thumbnail" max-width="100%">
+            </div>
+            <form method="POST" enctype="multipart/form-data" id="updateProfilePictureForm">
+                {% csrf_token %}
+                <br>
+                <span style="display: none;">{{ form }}</span>
+                <label for="id_profile_picture" class="btn btn-warning text-white m-0">Update profile picture</label>
+            </form>
+        </center>
+        <h1 class="text-primary text-center  my-4" style="font-weight: 900;">{{profile.user}}</h1>
+        <p><strong>Joined on :</strong> {{user.date_joined}}</p>
+        <p><strong>Last login :</strong> {{user.last_login}}</p>
+        <hr>
+        <p class="text-warning lead  my-4" style="font-weight: 800; font-size: 1.4em;">Stats</p>
+        <p><strong>Books read :</strong> {{profile.books.count}}</p>
+        <p><strong>No of reviews given :</strong> {{count}}</p>
+        <p><strong>Average rating per book :</strong> {{avg_rating}}</p>
+    </div>
+    <br>
+    <!-- pie chart -->
+    {%if profile.books.count == 0%}
+    {%else%}
+    <hr>
+    <div id="container bg-warning">
+        <canvas class="text-center" id="pie-chart"></canvas>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js">
+        {% endif %}
+    </script>
+    <script>
+Chart.defaults.global.title.fontSize = 20
+var config = {
+type: 'pie',
+data: {
+    datasets: [{
+    data: {{ values|safe }},
+    backgroundColor: {{ colors|safe }},
+    label: 'Tags'
+    }],
+    labels: {{ labels|safe }}
+},
+options: {
+    title: {
+            display: true,
+            text: 'Tag-wise distribution of read books'
+        }
+}
+};
+
+window.onload = function() {
+var ctx = document.getElementById('pie-chart').getContext('2d');
+window.myPie = new Chart(ctx, config);
+};
+
+    </script>
+    <!-- pie chart ends here -->
+    <hr>
+    <p class="text-center lead text-warning my-4" style="font-weight: 800; font-size: 1.4em;">Books read by
+        {{profile.user}}</p>
+    <div class="row" style="overflow-x: scroll;  flex-wrap: nowrap; ">
+        {%for book in books%}
+        <div class="col-md-3" style="display:inline-block;float:none;">
+            <a href="/details/{{book.id}}" style="text-decoration: none;">
+                <center><img src="{{book.cover.url}}" class="img-thumbnail" width="200px"></center>
+                <div class="caption">
+                    <p class="text-center">{{book.title}}</p>
+                </div>
+            </a>
+        </div>
+        {%endfor%}
+    </div>
+    <br>
+    <form class="container text-center my-5" method="POST" action='/delete-profile/'>
+        {% csrf_token %}
+        <input type='hidden' name='userid' value="{{user.id}}" style="display: none;" />
+        <button class="btn btn-danger" type="Submit">Delete Profile</button>
+    </form>
+</div>
+{% endblock content %}

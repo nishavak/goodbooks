@@ -1,0 +1,64 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+<form style="z-index:999">
+    <!-- <label for="key"><strong>Enter query:</strong></label> -->
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Search" id="key" name="key" autocomplete="off">
+        <div class="input-group-append">
+            <button class="btn btn-primary" type="submit">Search</button>
+        </div>
+    </div>
+</form>
+<!-- <div class="mt-4 mb-1"><strong>Search results:</strong></div> -->
+<table class="table table-bordered table-hover mt-2">
+    <thead class="bg-light">
+        <tr>
+            <th>#</th>
+            <!-- <th>ID</th> -->
+            <th>Cover</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Tags</th>
+            <!-- <th>Quote</th> -->
+            <th>Rating</th>
+            <th>Published on</th>
+            <!-- <th>Summary</th> -->
+            <!-- <th>Add to Favorites</th> -->
+        </tr>
+    </thead>
+    <tbody>
+        {% for book in books %}
+        <tr class='clickable-row' data-href='/details/{{ book.id }}'>
+            <th class="align-middle">{{ forloop.counter }}</th>
+            <!-- <th class="align-middle">{{ book.id }}</th> -->
+            <td class="align-middle"><img
+                    src="{% if book.cover.url != '' %}{{ book.cover.url }}{% else %}{% static 'img/none.jpg' %}{% endif %}"
+                    alt="Cover Art" class="img-responsive" style="width: 60px;"></td>
+            <td class="align-middle">{{ book.title }}</td>
+            <td class="align-middle">
+                <ul>
+                    {% for author in book.author.all %}
+                    <li class="p-2" style="text-transform: capitalize;">{{ author.name }}</li>
+                    {% endfor %}
+                </ul>
+            </td>
+            <td class="align-middle">
+                <ul>
+                    {% for tag_ in book.tag.all %}
+                    <li class="p-2" style="text-transform: capitalize;">{{ tag_.tagname }}</li>
+                    {% endfor %}
+                </ul>
+            </td>
+            <!-- <td class="align-middle"><strong>{{ book.quote }}</strong></td> -->
+            <td class="align-middle">
+                {% with id=book.id %}
+                {{ rating|get_item:id}}
+                {% endwith %}
+            </td>
+            <td class="align-middle">{{ book.published_date }}</td>
+            <!-- <td class="align-middle">{{ book.summary }}</td> -->
+            <!-- <td class="align-middle p-4"><button class="btn btn-primary" type="button">Add</button> -->
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>{% endblock content %}

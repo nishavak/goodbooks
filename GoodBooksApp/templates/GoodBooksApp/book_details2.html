@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <div style="text-align: center;">
+                <img src="{% if book.cover.url != '' %}{{ book.cover.url }}{% else %}{% static 'img/none.jpg' %}{% endif %}"
+                    alt="Cover Art" class="img-responsive img-thumbnail" style="width: 13em;">
+                {% if read_books == -1 %}
+                <form method="POST" action="/add-read-book/">
+                    {% csrf_token %}
+                    <input type="hidden" name="book_id" value="{{ book.id }}">
+                    <button type="submit" class="btn btn-primary my-4">Add to Read Books</button>
+                </form>
+                {% else %}
+                <form method="POST" action="/del-read-book/">
+                    {% csrf_token %}
+                    <input type="hidden" name="book_id" value="{{ book.id }}">
+                    <button type="submit" class="btn btn-primary my-4">Remove from read books</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-9">
+            <h1 style="font-weight: 600;">{{book.title}}</h1>
+            <div class="text-right">
+                <em>
+                    <span class="p-2"> - by</span>
+                    {% for author in book.author.all %}
+                    {%if forloop.last%}
+                    <span class="p-2" style="text-transform: capitalize;">{{ author.name }}</span>
+                    {%else%}
+                    <span class="p-2" style="text-transform: capitalize;">{{ author.name }},</span>
+                    {%endif%}
+                    {% endfor %}
+                </em>
+            </div>
+            <div>
+                <strong>Rating: </strong>
+                {% with id=book.id %}
+                {{ rating|get_item:id}}
+                {% endwith %}
+                <br />
+                Based on {{ count_of_ratings|length }} reviews.
+            </div>
+            <div class="py-4">
+                {% if book.summary != '' %}
+                <strong>About the book: </strong>
+                <br />
+                {{ book.summary }}
+                {% endif %}
+                <br />
+                <div class="py-4">
+                    {% if book.tag.all %}
+                    <strong>Tags ({{ book.tag.all|length }}): </strong>
+                    {% for tag_ in book.tag.all %}
+                    <span class="p-2" style="text-transform: capitalize;">{{ tag_.tagname }}</span>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="py-2">
+                    <div>
+                        {% if book.quote %}
+                        <strong>Quote from {{book.title}}: </strong>
+                        <br />
+                        <em>
+                            {{ book.quote }}
+                        </em>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% if logged_in_user != 'AnonymousUser' %}
+            <div class="py-2 my-2 bg-primary text-white rounded" id="toggleFeedback"
+                style="text-align: center; cursor: pointer;">Provide feedback as
+                {{request.user}}</div>
+            <div id="toggleFeedbackForm">
+                <div class="col-md-12 py-4">
+                    <form method="POST">{% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-primary my-4">Submit feedback</button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+            {% with cf=count_of_ratings.count %}
+            {% if cf == 0 %}
+            <div class="lead my-4" style="text-align: center; font-weight: 900;">No Feedbacks</div>
+            {% elif cf == 1 %}
+            <div class="lead my-4" style="text-align: center; font-weight: 900;">1 Feedback</div>
+            {% else %}
+            <div class="lead my-4" style="text-align: center; font-weight: 900;">{{ cf }} Feedbacks</div>
+            {% endif %}
+            {% endwith %}
+
+            {% for i in feedbackObject  %}
+            <strong>Username: </strong>
+            {% with x=i.user_id %}
+            {{ users|get_username:x }}
+            {% endwith %}
+            <br />
+            <strong>Rating: </strong>{{ i.rating }}<br>
+            <strong>Review:</strong><br />
+            {% if i.review == '' %}
+            <p>No review available</p>
+            {% else %}
+            {{ i.review }}
+            {% endif %}
+            <br><br>
+            {% if logged_in_user == users|get_username:i.user_id %}
+            <form method="POST" action="/delete-feedback/">
+                {% csrf_token %}
+                <input type="hidden" name="book_id" value="{{ book.id }}">
+                <input type="hidden" name="feedback_id" value="{{ i.id }}">
+                <button type="submit" class="btn btn-danger my-2">Delete</button>
+            </form>
+            <hr />
+            <br />
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock content %}
