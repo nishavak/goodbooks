@@ -40,6 +40,8 @@ def login_request(request):
 
 
 def deleteProfile(request):
+    if not request.user.is_authenticated:
+        return redirect(handleAnon)
     current_user_id = request.POST.get('userid')
     user = User.objects.all().get(id=current_user_id)
     try:
@@ -105,6 +107,8 @@ def BookList(request):
 
 
 def deleteFeedback(request):
+    if not request.user.is_authenticated:
+        return redirect(handleAnon)
     book_id = request.POST.get('book_id')
     feedback_id = request.POST.get('feedback_id')
     Feedback.objects.get(id=feedback_id).delete()
@@ -236,6 +240,8 @@ def Homepage(request):
 
 
 def profileView(request):
+    if not request.user.is_authenticated:
+        return redirect(handleAnon)
     current_user = Profile.objects.get(user=request.user)
     user_linked = User.objects.get(id=current_user.user_id)
     feedbacks = Feedback.objects.filter(user_id=current_user.user_id)
@@ -285,6 +291,8 @@ def profileView(request):
 
 
 def addReadBook(request):
+    if not request.user.is_authenticated:
+        return redirect(handleAnon)
     bookid=request.POST.get('book_id')
     user=request.user
     po=Profile.objects.get(id=user.id)
@@ -294,6 +302,8 @@ def addReadBook(request):
 
 
 def delReadBook(request):
+    if not request.user.is_authenticated:
+        return redirect(handleAnon)
     bookid=request.POST.get('book_id')
     user=request.user
     po=Profile.objects.get(id=user.id)
