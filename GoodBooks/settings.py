@@ -45,16 +45,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # minify html
-    # 'django.middleware.cache.UpdateCacheMiddleware',
-    # 'htmlmin.middleware.HtmlMinifyMiddleware',
-    # # other middleware classes
-    # 'django.middleware.cache.FetchFromCacheMiddleware',
-    # 'htmlmin.middleware.MarkRequestMiddleware',
+    # others
+    'htmlmin.middleware.HtmlMinifyMiddleware',
+    'htmlmin.middleware.MarkRequestMiddleware',
     # fresh
     # 'fresh.middleware.FreshMiddleware',
 ]
-# HTML_MINIFY = True
+HTML_MINIFY = True
 # KEEP_COMMENTS_ON_MINIFYING = False
 # SITE_ROOT = BASE_DIR
 # SITE_ROOT = os.path.dirname(os.path.abspath(__file__))
