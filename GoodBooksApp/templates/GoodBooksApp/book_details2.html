@@ -11,13 +11,13 @@
                 <form method="POST" action="/add-read-book/">
                     {% csrf_token %}
                     <input type="hidden" name="book_id" value="{{ book.id }}">
-                    <button type="submit" class="btn btn-primary my-4">Add to Read Books</button>
+                    <button type="submit" class="btn btn-outline-primary my-4">Add to Read Books</button>
                 </form>
                 {% else %}
                 <form method="POST" action="/del-read-book/">
                     {% csrf_token %}
                     <input type="hidden" name="book_id" value="{{ book.id }}">
-                    <button type="submit" class="btn btn-primary my-4">Remove from read books</button>
+                    <button type="submit" class="btn btn-outline-primary my-4">Remove from read books</button>
                 </form>
                 {% endif %}
             </div>
@@ -72,14 +72,16 @@
                 </div>
             </div>
             {% if logged_in_user != 'AnonymousUser' %}
-            <div class="py-2 my-2 bg-primary text-white rounded" id="toggleFeedback"
-                style="text-align: center; cursor: pointer;">Provide feedback as
-                {{request.user}}</div>
+            <div class="text-center">
+                <div class="py-2 my-2 bg-light text-dark rounded" id="toggleFeedback" style="cursor: pointer;">
+                    Provide feedback as
+                    {{request.user}}</div>
+            </div>
             <div id="toggleFeedbackForm">
                 <div class="col-md-12 py-4">
                     <form method="POST">{% csrf_token %}
                         {{ form.as_p }}
-                        <button type="submit" class="btn btn-primary my-4">Submit feedback</button>
+                        <button type="submit" class="btn btn-outline-success my-4">Submit feedback</button>
                     </form>
                 </div>
             </div>
@@ -115,9 +117,9 @@
                 <input type="hidden" name="feedback_id" value="{{ i.id }}">
                 <button type="submit" class="btn btn-danger my-2">Delete</button>
             </form>
-            <hr />
             <br />
             {% endif %}
+            <hr />
             {% endfor %}
         </div>
     </div>
