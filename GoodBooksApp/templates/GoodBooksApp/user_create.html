@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 {% block content %}
 <form action="#" method="post" class="form" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Add</button>
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-outline-primary">Add User</button>
 </form>
 {% endblock content %}
