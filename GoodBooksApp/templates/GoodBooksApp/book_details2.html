@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 {% block content %}
 <div class="container">
     <div class="row">
@@ -80,7 +81,7 @@
             <div id="toggleFeedbackForm">
                 <div class="col-md-12 py-4">
                     <form method="POST">{% csrf_token %}
-                        {{ form.as_p }}
+                        {{ form|crispy }}
                         <button type="submit" class="btn btn-outline-success my-4">Submit feedback</button>
                     </form>
                 </div>
